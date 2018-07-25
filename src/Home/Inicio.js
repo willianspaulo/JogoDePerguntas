@@ -10,8 +10,15 @@ class Inicio extends Component {
 
         this.state = {
             usuario: {},
-            estaLogado: false
+            estaLogado: false,
+            categorias: {}
         }
+
+        config.syncState('categorias', {
+            context: this,
+            state: 'categorias',
+            asArray: false
+        })
 
         auth.onAuthStateChanged((usuario) => {
             if (usuario) {
@@ -88,8 +95,15 @@ class Inicio extends Component {
                                    </a>
                                 </span>
                             }
-                        </Card.Content> 
+                        </Card.Content>
                     </Card>
+
+                    {JSON.stringify(this.state.categorias)}
+
+                    
+
+                    
+
                 </Container>
             </div>
         )
