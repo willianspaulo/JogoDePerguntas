@@ -88,7 +88,7 @@ class Inicio extends Component {
                                    </a>
                                 </span>
                             }
-                        </Card.Content>
+                        </Card.Content> 
                     </Card>
                 </Container>
             </div>
