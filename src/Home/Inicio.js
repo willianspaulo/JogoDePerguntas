@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Card, Button, Image, Icon, Divider, Container } from 'semantic-ui-react'
 import config, { auth, providers } from './../config'
-import firebase from 'firebase'
+import firebase, { storage } from 'firebase'
 //const Inicio = prop => {
 class Inicio extends Component {
 
@@ -33,6 +33,10 @@ class Inicio extends Component {
                 this.setState({ estaLogado: false })
             }
         })
+
+        this.gravarDados = this.gravarDados.bind(this)
+        this.selecionarEditar = this.selecionarEditar.bind(this)
+        this.atualizarDados = this.atualizarDados.bind(this)
     }
 
     autentica(provider) {
@@ -47,6 +51,62 @@ class Inicio extends Component {
             .catch((err) => {
                 alert('ERRO: não foi possível sair')
             })
+    }
+
+    gravarDados(e) {
+        e.preventDefault()
+
+        console.log(this.nome.value)
+        console.log(this.icone.value)
+        //console.log(this.image.files)
+
+        const novaCategoria = {
+            nome: this.nome.value,
+            icone: this.icone.value
+        }
+
+        config.push('categorias', {
+            data: novaCategoria
+        })
+
+    }
+
+    removerDado(k) {
+
+        //console.log(k)
+
+        config.remove('categorias/' + k, function (err) {
+            console.log(k, err)
+        });
+    }
+
+    selecionarEditar(k) {
+        this.nome.value = 'teste nome'
+        this.icone.value = 'teste icone'
+        this.setState({
+            endPointCategoria: k
+        })
+
+    }
+
+    atualizarDados() {
+
+        console.log(this.state.endPointCategoria)
+
+        config.update('categorias/' + this.state.endPointCategoria, {
+            data: {
+                nome: this.nome.value,
+                icone: this.icone.value
+            }
+        })
+            .then((data) => {
+                console.log(data)
+                //Router.transitionTo('dashboard');
+            })
+            .catch(err => {
+                console.log(err)
+                //handle error
+            });
     }
 
     render() {
@@ -98,12 +158,36 @@ class Inicio extends Component {
                         </Card.Content>
                     </Card>
 
-                    {JSON.stringify(this.state.categorias)}
 
-                    
+                    {
+                        Object.keys(this.state.categorias).map(k => {
+                            return (
+                                <a key={k} className="ui label">
+                                    <i className={this.state.categorias[k].icone}></i>
+                                    {this.state.categorias[k].nome}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <i className="trash alternate icon" onClick={() => this.removerDado(k)}></i>
+                                    <i className="pencil icon" onClick={() => this.selecionarEditar(k)}></i>
+                                </a>
+                            )
+                        })
+                    }
+                </Container>
 
-                    
+                <Container>
+                    <form onSubmit={this.gravarDados} className="ui form" style={{ padding: "100px 30%" }}>
+                        <div className="field">
+                            <label htmlFor="nome">Nome da Categoria</label>
+                            <input type="text" name="nome" id="nome" placeholder="ex: Mundo" ref={(ref) => this.nome = ref} />
+                        </div>
+                        <div className="field">
+                            <label htmlFor="icone">Icone</label>
+                            <input type="text" name="icone" id="icone" placeholder="ex: globe icon" ref={(ref) => this.icone = ref} />
+                        </div>
 
+                        <button className="ui button" type="submit">Criar</button>
+                        <button className="ui button" type="button" onClick={this.atualizarDados}>Atualizar</button>
+                    </form>
                 </Container>
             </div>
         )
