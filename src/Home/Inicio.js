@@ -80,9 +80,9 @@ class Inicio extends Component {
         });
     }
 
-    selecionarEditar(k) {
-        this.nome.value = 'teste nome'
-        this.icone.value = 'teste icone'
+    selecionarEditar(categoria, k) {
+        this.nome.value = categoria.nome
+        this.icone.value = categoria.icone
         this.setState({
             endPointCategoria: k
         })
@@ -167,7 +167,7 @@ class Inicio extends Component {
                                     {this.state.categorias[k].nome}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     <i className="trash alternate icon" onClick={() => this.removerDado(k)}></i>
-                                    <i className="pencil icon" onClick={() => this.selecionarEditar(k)}></i>
+                                    <i className="pencil icon" onClick={() => this.selecionarEditar(this.state.categorias[k], k)}></i>
                                 </a>
                             )
                         })
